@@ -1,38 +1,942 @@
-/*
- Highcharts JS v8.0.0 (2019-12-10)
-
- Exporting module
-
- (c) 2010-2019 Torstein Honsi
-
- License: www.highcharts.com/license
-*/
-(function(f){"object"===typeof module&&module.exports?(f["default"]=f,module.exports=f):"function"===typeof define&&define.amd?define("highcharts/modules/exporting",["highcharts"],function(k){f(k);f.Highcharts=k;return f}):f("undefined"!==typeof Highcharts?Highcharts:void 0)})(function(f){function k(e,g,f,H){e.hasOwnProperty(g)||(e[g]=H.apply(null,f))}f=f?f._modules:{};k(f,"modules/full-screen.src.js",[f["parts/Globals.js"]],function(e){(e.FullScreen=function(e){this.init(e.parentNode)}).prototype=
-{init:function(e){var g;e.requestFullscreen?g=e.requestFullscreen():e.mozRequestFullScreen?g=e.mozRequestFullScreen():e.webkitRequestFullscreen?g=e.webkitRequestFullscreen():e.msRequestFullscreen&&(g=e.msRequestFullscreen());if(g)g["catch"](function(){alert("Full screen is not supported inside a frame")})}}});k(f,"mixins/navigation.js",[],function(){return{initUpdate:function(e){e.navigation||(e.navigation={updates:[],update:function(e,f){this.updates.forEach(function(g){g.update.call(g.context,e,
-f)})}})},addUpdate:function(e,g){g.navigation||this.initUpdate(g);g.navigation.updates.push({update:e,context:g})}}});k(f,"modules/exporting.src.js",[f["parts/Globals.js"],f["parts/Utilities.js"],f["mixins/navigation.js"]],function(e,g,f){var k=g.discardElement,t=g.extend,I=g.isObject,C=g.objectEach,r=g.pick;g=e.defaultOptions;var w=e.doc,A=e.Chart,x=e.addEvent,J=e.removeEvent,B=e.fireEvent,v=e.createElement,n=e.css,p=e.merge,K=e.isTouchDevice,y=e.win,F=y.navigator.userAgent,D=e.SVGRenderer,G=e.Renderer.prototype.symbols,
-L=/Edge\/|Trident\/|MSIE /.test(F),M=/firefox/i.test(F);t(g.lang,{viewFullscreen:"View in full screen",printChart:"Print chart",downloadPNG:"Download PNG image",downloadJPEG:"Download JPEG image",downloadPDF:"Download PDF document",downloadSVG:"Download SVG vector image",contextButtonTitle:"Chart context menu"});g.navigation||(g.navigation={});p(!0,g.navigation,{buttonOptions:{theme:{},symbolSize:14,symbolX:12.5,symbolY:10.5,align:"right",buttonSpacing:3,height:22,verticalAlign:"top",width:24}});
-p(!0,g.navigation,{menuStyle:{border:"1px solid #999999",background:"#ffffff",padding:"5px 0"},menuItemStyle:{padding:"0.5em 1em",color:"#333333",background:"none",fontSize:K?"14px":"11px",transition:"background 250ms, color 250ms"},menuItemHoverStyle:{background:"#335cad",color:"#ffffff"},buttonOptions:{symbolFill:"#666666",symbolStroke:"#666666",symbolStrokeWidth:3,theme:{padding:5}}});g.exporting={type:"image/png",url:"https://export.highcharts.com/",printMaxWidth:780,scale:2,buttons:{contextButton:{className:"highcharts-contextbutton",
-menuClassName:"highcharts-contextmenu",symbol:"menu",titleKey:"contextButtonTitle",menuItems:"viewFullscreen printChart separator downloadPNG downloadJPEG downloadPDF downloadSVG".split(" ")}},menuItemDefinitions:{viewFullscreen:{textKey:"viewFullscreen",onclick:function(){this.fullscreen=new e.FullScreen(this.container)}},printChart:{textKey:"printChart",onclick:function(){this.print()}},separator:{separator:!0},downloadPNG:{textKey:"downloadPNG",onclick:function(){this.exportChart()}},downloadJPEG:{textKey:"downloadJPEG",
-onclick:function(){this.exportChart({type:"image/jpeg"})}},downloadPDF:{textKey:"downloadPDF",onclick:function(){this.exportChart({type:"application/pdf"})}},downloadSVG:{textKey:"downloadSVG",onclick:function(){this.exportChart({type:"image/svg+xml"})}}}};e.post=function(a,b,c){var d=v("form",p({method:"post",action:a,enctype:"multipart/form-data"},c),{display:"none"},w.body);C(b,function(a,b){v("input",{type:"hidden",name:b,value:a},null,d)});d.submit();k(d)};e.isSafari&&e.win.matchMedia("print").addListener(function(a){e.printingChart&&
-(a.matches?e.printingChart.beforePrint():e.printingChart.afterPrint())});t(A.prototype,{sanitizeSVG:function(a,b){var c=a.indexOf("</svg>")+6,d=a.substr(c);a=a.substr(0,c);b&&b.exporting&&b.exporting.allowHTML&&d&&(d='<foreignObject x="0" y="0" width="'+b.chart.width+'" height="'+b.chart.height+'"><body xmlns="http://www.w3.org/1999/xhtml">'+d+"</body></foreignObject>",a=a.replace("</svg>",d+"</svg>"));a=a.replace(/zIndex="[^"]+"/g,"").replace(/symbolName="[^"]+"/g,"").replace(/jQuery[0-9]+="[^"]+"/g,
-"").replace(/url\(("|&quot;)(.*?)("|&quot;);?\)/g,"url($2)").replace(/url\([^#]+#/g,"url(#").replace(/<svg /,'<svg xmlns:xlink="http://www.w3.org/1999/xlink" ').replace(/ (|NS[0-9]+:)href=/g," xlink:href=").replace(/\n/," ").replace(/(fill|stroke)="rgba\(([ 0-9]+,[ 0-9]+,[ 0-9]+),([ 0-9\.]+)\)"/g,'$1="rgb($2)" $1-opacity="$3"').replace(/&nbsp;/g,"\u00a0").replace(/&shy;/g,"\u00ad");this.ieSanitizeSVG&&(a=this.ieSanitizeSVG(a));return a},getChartHTML:function(){this.styledMode&&this.inlineStyles();
-return this.container.innerHTML},getSVG:function(a){var b,c=p(this.options,a);c.plotOptions=p(this.userOptions.plotOptions,a&&a.plotOptions);c.time=p(this.userOptions.time,a&&a.time);var d=v("div",null,{position:"absolute",top:"-9999em",width:this.chartWidth+"px",height:this.chartHeight+"px"},w.body);var g=this.renderTo.style.width;var q=this.renderTo.style.height;g=c.exporting.sourceWidth||c.chart.width||/px$/.test(g)&&parseInt(g,10)||(c.isGantt?800:600);q=c.exporting.sourceHeight||c.chart.height||
-/px$/.test(q)&&parseInt(q,10)||400;t(c.chart,{animation:!1,renderTo:d,forExport:!0,renderer:"SVGRenderer",width:g,height:q});c.exporting.enabled=!1;delete c.data;c.series=[];this.series.forEach(function(a){b=p(a.userOptions,{animation:!1,enableMouseTracking:!1,showCheckbox:!1,visible:a.visible});b.isInternal||c.series.push(b)});this.axes.forEach(function(a){a.userOptions.internalKey||(a.userOptions.internalKey=e.uniqueKey())});var f=new e.Chart(c,this.callback);a&&["xAxis","yAxis","series"].forEach(function(b){var d=
-{};a[b]&&(d[b]=a[b],f.update(d))});this.axes.forEach(function(a){var b=e.find(f.axes,function(b){return b.options.internalKey===a.userOptions.internalKey}),d=a.getExtremes(),c=d.userMin;d=d.userMax;b&&("undefined"!==typeof c&&c!==b.min||"undefined"!==typeof d&&d!==b.max)&&b.setExtremes(c,d,!0,!1)});g=f.getChartHTML();B(this,"getSVG",{chartCopy:f});g=this.sanitizeSVG(g,c);c=null;f.destroy();k(d);return g},getSVGForExport:function(a,b){var c=this.options.exporting;return this.getSVG(p({chart:{borderRadius:0}},
-c.chartOptions,b,{exporting:{sourceWidth:a&&a.sourceWidth||c.sourceWidth,sourceHeight:a&&a.sourceHeight||c.sourceHeight}}))},getFilename:function(){var a=this.userOptions.title&&this.userOptions.title.text,b=this.options.exporting.filename;if(b)return b.replace(/\//g,"-");"string"===typeof a&&(b=a.toLowerCase().replace(/<\/?[^>]+(>|$)/g,"").replace(/[\s_]+/g,"-").replace(/[^a-z0-9\-]/g,"").replace(/^[\-]+/g,"").replace(/[\-]+/g,"-").substr(0,24).replace(/[\-]+$/g,""));if(!b||5>b.length)b="chart";
-return b},exportChart:function(a,b){b=this.getSVGForExport(a,b);a=p(this.options.exporting,a);e.post(a.url,{filename:a.filename?a.filename.replace(/\//g,"-"):this.getFilename(),type:a.type,width:a.width||0,scale:a.scale,svg:b},a.formAttributes)},moveContainers:function(a){(this.fixedDiv?[this.fixedDiv,this.scrollingContainer]:[this.container]).forEach(function(b){a.appendChild(b)})},beforePrint:function(){var a=w.body,b=this.options.exporting.printMaxWidth,c={childNodes:a.childNodes,origDisplay:[],
-resetParams:void 0};this.isPrinting=!0;this.pointer.reset(null,0);B(this,"beforePrint");b&&this.chartWidth>b&&(c.resetParams=[this.options.chart.width,void 0,!1],this.setSize(b,void 0,!1));[].forEach.call(c.childNodes,function(a,b){1===a.nodeType&&(c.origDisplay[b]=a.style.display,a.style.display="none")});this.moveContainers(a);this.printReverseInfo=c},afterPrint:function(){if(this.printReverseInfo){var a=this.printReverseInfo.childNodes,b=this.printReverseInfo.origDisplay,c=this.printReverseInfo.resetParams;
-this.moveContainers(this.renderTo);[].forEach.call(a,function(a,c){1===a.nodeType&&(a.style.display=b[c]||"")});this.isPrinting=!1;c&&this.setSize.apply(this,c);delete this.printReverseInfo;delete e.printingChart;B(this,"afterPrint")}},print:function(){var a=this;a.isPrinting||(e.printingChart=a,e.isSafari||a.beforePrint(),setTimeout(function(){y.focus();y.print();e.isSafari||setTimeout(function(){a.afterPrint()},1E3)},1))},contextMenu:function(a,b,c,d,g,f,E){var h=this,q=h.options.navigation,p=h.chartWidth,
-z=h.chartHeight,m="cache-"+a,l=h[m],u=Math.max(g,f);if(!l){h.exportContextMenu=h[m]=l=v("div",{className:a},{position:"absolute",zIndex:1E3,padding:u+"px",pointerEvents:"auto"},h.fixedDiv||h.container);var k=v("ul",{className:"highcharts-menu"},{listStyle:"none",margin:0,padding:0},l);h.styledMode||n(k,t({MozBoxShadow:"3px 3px 10px #888",WebkitBoxShadow:"3px 3px 10px #888",boxShadow:"3px 3px 10px #888"},q.menuStyle));l.hideMenu=function(){n(l,{display:"none"});E&&E.setState(0);h.openMenu=!1;n(h.renderTo,
-{overflow:"hidden"});e.clearTimeout(l.hideTimer);B(h,"exportMenuHidden")};h.exportEvents.push(x(l,"mouseleave",function(){l.hideTimer=y.setTimeout(l.hideMenu,500)}),x(l,"mouseenter",function(){e.clearTimeout(l.hideTimer)}),x(w,"mouseup",function(b){h.pointer.inClass(b.target,a)||l.hideMenu()}),x(l,"click",function(){h.openMenu&&l.hideMenu()}));b.forEach(function(a){"string"===typeof a&&(a=h.options.exporting.menuItemDefinitions[a]);if(I(a,!0)){if(a.separator)var b=v("hr",null,null,k);else b=v("li",
-{className:"highcharts-menu-item",onclick:function(b){b&&b.stopPropagation();l.hideMenu();a.onclick&&a.onclick.apply(h,arguments)},innerHTML:a.text||h.options.lang[a.textKey]},null,k),h.styledMode||(b.onmouseover=function(){n(this,q.menuItemHoverStyle)},b.onmouseout=function(){n(this,q.menuItemStyle)},n(b,t({cursor:"pointer"},q.menuItemStyle)));h.exportDivElements.push(b)}});h.exportDivElements.push(k,l);h.exportMenuWidth=l.offsetWidth;h.exportMenuHeight=l.offsetHeight}b={display:"block"};c+h.exportMenuWidth>
-p?b.right=p-c-g-u+"px":b.left=c-u+"px";d+f+h.exportMenuHeight>z&&"top"!==E.alignOptions.verticalAlign?b.bottom=z-d-u+"px":b.top=d+f-u+"px";n(l,b);n(h.renderTo,{overflow:""});h.openMenu=!0;B(h,"exportMenuShown")},addButton:function(a){var b=this,c=b.renderer,d=p(b.options.navigation.buttonOptions,a),e=d.onclick,g=d.menuItems,f=d.symbolSize||12;b.btnCount||(b.btnCount=0);b.exportDivElements||(b.exportDivElements=[],b.exportSVGElements=[]);if(!1!==d.enabled){var h=d.theme,k=h.states,n=k&&k.hover;k=k&&
-k.select;var z;b.styledMode||(h.fill=r(h.fill,"#ffffff"),h.stroke=r(h.stroke,"none"));delete h.states;e?z=function(a){a&&a.stopPropagation();e.call(b,a)}:g&&(z=function(a){a&&a.stopPropagation();b.contextMenu(m.menuClassName,g,m.translateX,m.translateY,m.width,m.height,m);m.setState(2)});d.text&&d.symbol?h.paddingLeft=r(h.paddingLeft,25):d.text||t(h,{width:d.width,height:d.height,padding:0});b.styledMode||(h["stroke-linecap"]="round",h.fill=r(h.fill,"#ffffff"),h.stroke=r(h.stroke,"none"));var m=c.button(d.text,
-0,0,z,h,n,k).addClass(a.className).attr({title:r(b.options.lang[d._titleKey||d.titleKey],"")});m.menuClassName=a.menuClassName||"highcharts-menu-"+b.btnCount++;if(d.symbol){var l=c.symbol(d.symbol,d.symbolX-f/2,d.symbolY-f/2,f,f,{width:f,height:f}).addClass("highcharts-button-symbol").attr({zIndex:1}).add(m);b.styledMode||l.attr({stroke:d.symbolStroke,fill:d.symbolFill,"stroke-width":d.symbolStrokeWidth||1})}m.add(b.exportingGroup).align(t(d,{width:m.width,x:r(d.x,b.buttonOffset)}),!0,"spacingBox");
-b.buttonOffset+=(m.width+d.buttonSpacing)*("right"===d.align?-1:1);b.exportSVGElements.push(m,l)}},destroyExport:function(a){var b=a?a.target:this;a=b.exportSVGElements;var c=b.exportDivElements,d=b.exportEvents,g;a&&(a.forEach(function(a,d){a&&(a.onclick=a.ontouchstart=null,g="cache-"+a.menuClassName,b[g]&&delete b[g],b.exportSVGElements[d]=a.destroy())}),a.length=0);b.exportingGroup&&(b.exportingGroup.destroy(),delete b.exportingGroup);c&&(c.forEach(function(a,d){e.clearTimeout(a.hideTimer);J(a,
-"mouseleave");b.exportDivElements[d]=a.onmouseout=a.onmouseover=a.ontouchstart=a.onclick=null;k(a)}),c.length=0);d&&(d.forEach(function(a){a()}),d.length=0)}});D.prototype.inlineToAttributes="fill stroke strokeLinecap strokeLinejoin strokeWidth textAnchor x y".split(" ");D.prototype.inlineBlacklist=[/-/,/^(clipPath|cssText|d|height|width)$/,/^font$/,/[lL]ogical(Width|Height)$/,/perspective/,/TapHighlightColor/,/^transition/,/^length$/];D.prototype.unstyledElements=["clipPath","defs","desc"];A.prototype.inlineStyles=
-function(){function a(a){return a.replace(/([A-Z])/g,function(a,b){return"-"+b.toLowerCase()})}function b(c){function m(b,f){u=n=!1;if(g){for(q=g.length;q--&&!n;)n=g[q].test(f);u=!n}"transform"===f&&"none"===b&&(u=!0);for(q=e.length;q--&&!u;)u=e[q].test(f)||"function"===typeof b;u||x[f]===b&&"svg"!==c.nodeName||h[c.nodeName][f]===b||(-1!==d.indexOf(f)?c.setAttribute(a(f),b):l+=a(f)+":"+b+";")}var l="",u,n,q;if(1===c.nodeType&&-1===f.indexOf(c.nodeName)){var t=y.getComputedStyle(c,null);var x="svg"===
-c.nodeName?{}:y.getComputedStyle(c.parentNode,null);if(!h[c.nodeName]){k=r.getElementsByTagName("svg")[0];var v=r.createElementNS(c.namespaceURI,c.nodeName);k.appendChild(v);h[c.nodeName]=p(y.getComputedStyle(v,null));"text"===c.nodeName&&delete h.text.fill;k.removeChild(v)}if(M||L)for(var w in t)m(t[w],w);else C(t,m);l&&(t=c.getAttribute("style"),c.setAttribute("style",(t?t+";":"")+l));"svg"===c.nodeName&&c.setAttribute("stroke-width","1px");"text"!==c.nodeName&&[].forEach.call(c.children||c.childNodes,
-b)}}var c=this.renderer,d=c.inlineToAttributes,e=c.inlineBlacklist,g=c.inlineWhitelist,f=c.unstyledElements,h={},k;c=w.createElement("iframe");n(c,{width:"1px",height:"1px",visibility:"hidden"});w.body.appendChild(c);var r=c.contentWindow.document;r.open();r.write('<svg xmlns="http://www.w3.org/2000/svg"></svg>');r.close();b(this.container.querySelector("svg"));k.parentNode.removeChild(k)};G.menu=function(a,b,c,d){return["M",a,b+2.5,"L",a+c,b+2.5,"M",a,b+d/2+.5,"L",a+c,b+d/2+.5,"M",a,b+d-1.5,"L",
-a+c,b+d-1.5]};G.menuball=function(a,b,c,d){a=[];d=d/3-2;return a=a.concat(this.circle(c-d,b,d,d),this.circle(c-d,b+d+4,d,d),this.circle(c-d,b+2*(d+4),d,d))};A.prototype.renderExporting=function(){var a=this,b=a.options.exporting,c=b.buttons,d=a.isDirtyExporting||!a.exportSVGElements;a.buttonOffset=0;a.isDirtyExporting&&a.destroyExport();d&&!1!==b.enabled&&(a.exportEvents=[],a.exportingGroup=a.exportingGroup||a.renderer.g("exporting-group").attr({zIndex:3}).add(),C(c,function(b){a.addButton(b)}),a.isDirtyExporting=
-!1);x(a,"destroy",a.destroyExport)};x(A,"init",function(){var a=this;a.exporting={update:function(b,c){a.isDirtyExporting=!0;p(!0,a.options.exporting,b);r(c,!0)&&a.redraw()}};f.addUpdate(function(b,c){a.isDirtyExporting=!0;p(!0,a.options.navigation,b);r(c,!0)&&a.redraw()},a)});A.prototype.callbacks.push(function(a){a.renderExporting();x(a,"redraw",a.renderExporting)})});k(f,"masters/modules/exporting.src.js",[],function(){})});
+'use strict';
+(function (exports) {
+    if ("object" === typeof module && module.exports) {
+        /** @type {function(!Object): undefined} */
+        exports["default"] = exports;
+        /** @type {function(!Object): undefined} */
+        module.exports = exports;
+    } else {
+        if ("function" === typeof define && define.amd) {
+            define("highcharts/modules/exporting", ["highcharts"], function (tree) {
+                exports(tree);
+                /** @type {!Object} */
+                exports.Highcharts = tree;
+                return exports;
+            });
+        } else {
+            exports("undefined" !== typeof Highcharts ? Highcharts : void 0);
+        }
+    }
+})(function (t) {
+    /**
+     * @param {!Object} a
+     * @param {string} b
+     * @param {!Array} r
+     * @param {!Function} g
+     * @return {undefined}
+     */
+    function k(a, b, r, g) {
+        if (!a.hasOwnProperty(b)) {
+            a[b] = g.apply(null, r);
+        }
+    }
+    t = t ? t._modules : {};
+    k(t, "modules/full-screen.src.js", [t["parts/Globals.js"]], function (V) {
+        (V.FullScreen = function (context) {
+            this.init(context.parentNode);
+        }).prototype = {
+            init: function (container) {
+                var dummyPromise;
+                if (container.requestFullscreen) {
+                    dummyPromise = container.requestFullscreen();
+                } else {
+                    if (container.mozRequestFullScreen) {
+                        dummyPromise = container.mozRequestFullScreen();
+                    } else {
+                        if (container.webkitRequestFullscreen) {
+                            dummyPromise = container.webkitRequestFullscreen();
+                        } else {
+                            if (container.msRequestFullscreen) {
+                                dummyPromise = container.msRequestFullscreen();
+                            }
+                        }
+                    }
+                }
+                if (dummyPromise) {
+                    dummyPromise["catch"](function () {
+                        alert("Full screen is not supported inside a frame");
+                    });
+                }
+            }
+        };
+    });
+    k(t, "mixins/navigation.js", [], function () {
+        return {
+            initUpdate: function (self) {
+                if (!self.navigation) {
+                    self.navigation = {
+                        updates: [],
+                        update: function (a, lineNumber) {
+                            this.updates.forEach(function (g) {
+                                g.update.call(g.context, a, lineNumber);
+                            });
+                        }
+                    };
+                }
+            },
+            addUpdate: function (update, self) {
+                if (!self.navigation) {
+                    this.initUpdate(self);
+                }
+                self.navigation.updates.push({
+                    update: update,
+                    context: self
+                });
+            }
+        };
+    });
+    k(t, "modules/exporting.src.js", [t["parts/Globals.js"], t["parts/Utilities.js"], t["mixins/navigation.js"]], function (H, defaultOptions, self) {
+        var discardElement = defaultOptions.discardElement;
+        var extend = defaultOptions.extend;
+        var display = defaultOptions.isObject;
+        var objectEach = defaultOptions.objectEach;
+        var pick = defaultOptions.pick;
+        defaultOptions = H.defaultOptions;
+        var doc = H.doc;
+        var Chart = H.Chart;
+        var addEvent = H.addEvent;
+        var removeEvent = H.removeEvent;
+        var fireEvent = H.fireEvent;
+        var createElement = H.createElement;
+        var css = H.css;
+        var merge = H.merge;
+        var isTouchDevice = H.isTouchDevice;
+        var win = H.win;
+        var ua = win.navigator.userAgent;
+        var SVGRenderer = H.SVGRenderer;
+        var symbols = H.Renderer.prototype.symbols;
+        /** @type {boolean} */
+        var isDangkr = /Edge\/|Trident\/|MSIE /.test(ua);
+        /** @type {boolean} */
+        var isAOS = /firefox/i.test(ua);
+        extend(defaultOptions.lang, {
+            viewFullscreen: "View in full screen",
+            printChart: "Print chart",
+            downloadPNG: "Download PNG image",
+            downloadJPEG: "Download JPEG image",
+            downloadPDF: "Download PDF document",
+            downloadSVG: "Download SVG vector image",
+            contextButtonTitle: "Chart context menu"
+        });
+        if (!defaultOptions.navigation) {
+            defaultOptions.navigation = {};
+        }
+        merge(true, defaultOptions.navigation, {
+            buttonOptions: {
+                theme: {},
+                symbolSize: 14,
+                symbolX: 12.5,
+                symbolY: 10.5,
+                align: "right",
+                buttonSpacing: 3,
+                height: 22,
+                verticalAlign: "top",
+                width: 24
+            }
+        });
+        merge(true, defaultOptions.navigation, {
+            menuStyle: {
+                border: "1px solid #999999",
+                background: "#ffffff",
+                padding: "5px 0"
+            },
+            menuItemStyle: {
+                padding: "0.5em 1em",
+                color: "#333333",
+                background: "none",
+                fontSize: isTouchDevice ? "14px" : "11px",
+                transition: "background 250ms, color 250ms"
+            },
+            menuItemHoverStyle: {
+                background: "#335cad",
+                color: "#ffffff"
+            },
+            buttonOptions: {
+                symbolFill: "#666666",
+                symbolStroke: "#666666",
+                symbolStrokeWidth: 3,
+                theme: {
+                    padding: 5
+                }
+            }
+        });
+        defaultOptions.exporting = {
+            type: "image/png",
+            url: "https://export.highcharts.com/",
+            printMaxWidth: 780,
+            scale: 2,
+            buttons: {
+                contextButton: {
+                    className: "highcharts-contextbutton",
+                    menuClassName: "highcharts-contextmenu",
+                    symbol: "menu",
+                    titleKey: "contextButtonTitle",
+                    menuItems: "viewFullscreen printChart separator downloadPNG downloadJPEG downloadPDF downloadSVG".split(" ")
+                }
+            },
+            menuItemDefinitions: {
+                viewFullscreen: {
+                    textKey: "viewFullscreen",
+                    onclick: function () {
+                        this.fullscreen = new H.FullScreen(this.container);
+                    }
+                },
+                printChart: {
+                    textKey: "printChart",
+                    onclick: function () {
+                        this.print();
+                    }
+                },
+                separator: {
+                    separator: true
+                },
+                downloadPNG: {
+                    textKey: "downloadPNG",
+                    onclick: function () {
+                        this.exportChart();
+                    }
+                },
+                downloadJPEG: {
+                    textKey: "downloadJPEG",
+                    onclick: function () {
+                        this.exportChart({
+                            type: "image/jpeg"
+                        });
+                    }
+                },
+                downloadPDF: {
+                    textKey: "downloadPDF",
+                    onclick: function () {
+                        this.exportChart({
+                            type: "application/pdf"
+                        });
+                    }
+                },
+                downloadSVG: {
+                    textKey: "downloadSVG",
+                    onclick: function () {
+                        this.exportChart({
+                            type: "image/svg+xml"
+                        });
+                    }
+                }
+            }
+        };
+        /**
+         * @param {string} url
+         * @param {?} type
+         * @param {?} props
+         * @return {undefined}
+         */
+        H.post = function (url, type, props) {
+            var form = createElement("form", merge({
+                method: "post",
+                action: url,
+                enctype: "multipart/form-data"
+            }, props), {
+                display: "none"
+            }, doc.body);
+            objectEach(type, function (command_module_id, newPrinter) {
+                createElement("input", {
+                    type: "hidden",
+                    name: newPrinter,
+                    value: command_module_id
+                }, null, form);
+            });
+            form.submit();
+            discardElement(form);
+        };
+        if (H.isSafari) {
+            H.win.matchMedia("print").addListener(function (a) {
+                if (H.printingChart) {
+                    if (a.matches) {
+                        H.printingChart.beforePrint();
+                    } else {
+                        H.printingChart.afterPrint();
+                    }
+                }
+            });
+        }
+        extend(Chart.prototype, {
+            sanitizeSVG: function (svg, options) {
+                var id = svg.indexOf("</svg>") + 6;
+                var html = svg.substr(id);
+                svg = svg.substr(0, id);
+                if (options && options.exporting && options.exporting.allowHTML && html) {
+                    /** @type {string} */
+                    html = '<foreignObject x="0" y="0" width="' + options.chart.width + '" height="' + options.chart.height + '"><body xmlns="http://www.w3.org/1999/xhtml">' + html + "</body></foreignObject>";
+                    svg = svg.replace("</svg>", html + "</svg>");
+                }
+                svg = svg.replace(/zIndex="[^"]+"/g, "").replace(/symbolName="[^"]+"/g, "").replace(/jQuery[0-9]+="[^"]+"/g, "").replace(/url\(("|&quot;)(.*?)("|&quot;);?\)/g, "url($2)").replace(/url\([^#]+#/g, "url(#").replace(/<svg /, '<svg xmlns:xlink="http://www.w3.org/1999/xlink" ').replace(/ (|NS[0-9]+:)href=/g, " xlink:href=").replace(/\n/, " ").replace(/(fill|stroke)="rgba\(([ 0-9]+,[ 0-9]+,[ 0-9]+),([ 0-9\.]+)\)"/g, '$1="rgb($2)" $1-opacity="$3"').replace(/&nbsp;/g, "\u00a0").replace(/&shy;/g, "\u00ad");
+                if (this.ieSanitizeSVG) {
+                    svg = this.ieSanitizeSVG(svg);
+                }
+                return svg;
+            },
+            getChartHTML: function () {
+                if (this.styledMode) {
+                    this.inlineStyles();
+                }
+                return this.container.innerHTML;
+            },
+            getSVG: function (data) {
+                var seriesOptions;
+                var options = merge(this.options, data);
+                options.plotOptions = merge(this.userOptions.plotOptions, data && data.plotOptions);
+                options.time = merge(this.userOptions.time, data && data.time);
+                var form = createElement("div", null, {
+                    position: "absolute",
+                    top: "-9999em",
+                    width: this.chartWidth + "px",
+                    height: this.chartHeight + "px"
+                }, doc.body);
+                var width = this.renderTo.style.width;
+                var cssHeight = this.renderTo.style.height;
+                width = options.exporting.sourceWidth || options.chart.width || /px$/.test(width) && parseInt(width, 10) || (options.isGantt ? 800 : 600);
+                cssHeight = options.exporting.sourceHeight || options.chart.height || /px$/.test(cssHeight) && parseInt(cssHeight, 10) || 400;
+                extend(options.chart, {
+                    animation: false,
+                    renderTo: form,
+                    forExport: true,
+                    renderer: "SVGRenderer",
+                    width: width,
+                    height: cssHeight
+                });
+                /** @type {boolean} */
+                options.exporting.enabled = false;
+                delete options.data;
+                /** @type {!Array} */
+                options.series = [];
+                this.series.forEach(function (serie) {
+                    seriesOptions = merge(serie.userOptions, {
+                        animation: false,
+                        enableMouseTracking: false,
+                        showCheckbox: false,
+                        visible: serie.visible
+                    });
+                    if (!seriesOptions.isInternal) {
+                        options.series.push(seriesOptions);
+                    }
+                });
+                this.axes.forEach(function (axis) {
+                    if (!axis.userOptions.internalKey) {
+                        axis.userOptions.internalKey = H.uniqueKey();
+                    }
+                });
+                var o = new H.Chart(options, this.callback);
+                if (data) {
+                    ["xAxis", "yAxis", "series"].forEach(function (p) {
+                        var d = {};
+                        if (data[p]) {
+                            d[p] = data[p];
+                            o.update(d);
+                        }
+                    });
+                }
+                this.axes.forEach(function (axis) {
+                    var self = H.find(o.axes, function (copy) {
+                        return copy.options.internalKey === axis.userOptions.internalKey;
+                    });
+                    var child = axis.getExtremes();
+                    var node = child.userMin;
+                    child = child.userMax;
+                    if (self && ("undefined" !== typeof node && node !== self.min || "undefined" !== typeof child && child !== self.max)) {
+                        self.setExtremes(node, child, true, false);
+                    }
+                });
+                width = o.getChartHTML();
+                fireEvent(this, "getSVG", {
+                    chartCopy: o
+                });
+                width = this.sanitizeSVG(width, options);
+                /** @type {null} */
+                options = null;
+                o.destroy();
+                discardElement(form);
+                return width;
+            },
+            getSVGForExport: function (options, chartOptions) {
+                var chartExportingOptions = this.options.exporting;
+                return this.getSVG(merge({
+                    chart: {
+                        borderRadius: 0
+                    }
+                }, chartExportingOptions.chartOptions, chartOptions, {
+                    exporting: {
+                        sourceWidth: options && options.sourceWidth || chartExportingOptions.sourceWidth,
+                        sourceHeight: options && options.sourceHeight || chartExportingOptions.sourceHeight
+                    }
+                }));
+            },
+            getFilename: function () {
+                var corpus = this.userOptions.title && this.userOptions.title.text;
+                var filename = this.options.exporting.filename;
+                if (filename) {
+                    return filename.replace(/\//g, "-");
+                }
+                if ("string" === typeof corpus) {
+                    /** @type {string} */
+                    filename = corpus.toLowerCase().replace(/<\/?[^>]+(>|$)/g, "").replace(/[\s_]+/g, "-").replace(/[^a-z0-9\-]/g, "").replace(/^[\-]+/g, "").replace(/[\-]+/g, "-").substr(0, 24).replace(/[\-]+$/g, "");
+                }
+                if (!filename || 5 > filename.length) {
+                    /** @type {string} */
+                    filename = "chart";
+                }
+                return filename;
+            },
+            exportChart: function (options, chartOptions) {
+                chartOptions = this.getSVGForExport(options, chartOptions);
+                options = merge(this.options.exporting, options);
+                H.post(options.url, {
+                    filename: options.filename ? options.filename.replace(/\//g, "-") : this.getFilename(),
+                    type: options.type,
+                    width: options.width || 0,
+                    scale: options.scale,
+                    svg: chartOptions
+                }, options.formAttributes);
+            },
+            moveContainers: function (map) {
+                (this.fixedDiv ? [this.fixedDiv, this.scrollingContainer] : [this.container]).forEach(function (b) {
+                    map.appendChild(b);
+                });
+            },
+            beforePrint: function () {
+                var owner = doc.body;
+                var width = this.options.exporting.printMaxWidth;
+                var node = {
+                    childNodes: owner.childNodes,
+                    origDisplay: [],
+                    resetParams: void 0
+                };
+                /** @type {boolean} */
+                this.isPrinting = true;
+                this.pointer.reset(null, 0);
+                fireEvent(this, "beforePrint");
+                if (width && this.chartWidth > width) {
+                    /** @type {!Array} */
+                    node.resetParams = [this.options.chart.width, void 0, false];
+                    this.setSize(width, void 0, false);
+                }
+                [].forEach.call(node.childNodes, function (collectionNode, i) {
+                    if (1 === collectionNode.nodeType) {
+                        node.origDisplay[i] = collectionNode.style.display;
+                        /** @type {string} */
+                        collectionNode.style.display = "none";
+                    }
+                });
+                this.moveContainers(owner);
+                this.printReverseInfo = node;
+            },
+            afterPrint: function () {
+                if (this.printReverseInfo) {
+                    var childerns = this.printReverseInfo.childNodes;
+                    var BROWSER_ENGINES = this.printReverseInfo.origDisplay;
+                    var size = this.printReverseInfo.resetParams;
+                    this.moveContainers(this.renderTo);
+                    [].forEach.call(childerns, function (collectionNode, browser) {
+                        if (1 === collectionNode.nodeType) {
+                            collectionNode.style.display = BROWSER_ENGINES[browser] || "";
+                        }
+                    });
+                    /** @type {boolean} */
+                    this.isPrinting = false;
+                    if (size) {
+                        this.setSize.apply(this, size);
+                    }
+                    delete this.printReverseInfo;
+                    delete H.printingChart;
+                    fireEvent(this, "afterPrint");
+                }
+            },
+            print: function () {
+                var chart = this;
+                if (!chart.isPrinting) {
+                    H.printingChart = chart;
+                    if (!H.isSafari) {
+                        chart.beforePrint();
+                    }
+                    setTimeout(function () {
+                        win.focus();
+                        win.print();
+                        if (!H.isSafari) {
+                            setTimeout(function () {
+                                chart.afterPrint();
+                            }, 1E3);
+                        }
+                    }, 1);
+                }
+            },
+            contextMenu: function (className, options, x, y, width, height, button) {
+                var chart = this;
+                var navOptions = chart.options.navigation;
+                var chartWidth = chart.chartWidth;
+                var chartHeight = chart.chartHeight;
+                /** @type {string} */
+                var cacheName = "cache-" + className;
+                var menu = chart[cacheName];
+                /** @type {number} */
+                var menuPadding = Math.max(width, height);
+                if (!menu) {
+                    chart.exportContextMenu = chart[cacheName] = menu = createElement("div", {
+                        className: className
+                    }, {
+                        position: "absolute",
+                        zIndex: 1E3,
+                        padding: menuPadding + "px",
+                        pointerEvents: "auto"
+                    }, chart.fixedDiv || chart.container);
+                    var elem = createElement("ul", {
+                        className: "highcharts-menu"
+                    }, {
+                        listStyle: "none",
+                        margin: 0,
+                        padding: 0
+                    }, menu);
+                    if (!chart.styledMode) {
+                        css(elem, extend({
+                            MozBoxShadow: "3px 3px 10px #888",
+                            WebkitBoxShadow: "3px 3px 10px #888",
+                            boxShadow: "3px 3px 10px #888"
+                        }, navOptions.menuStyle));
+                    }
+                    /**
+                     * @return {undefined}
+                     */
+                    menu.hideMenu = function () {
+                        css(menu, {
+                            display: "none"
+                        });
+                        if (button) {
+                            button.setState(0);
+                        }
+                        /** @type {boolean} */
+                        chart.openMenu = false;
+                        css(chart.renderTo, {
+                            overflow: "hidden"
+                        });
+                        H.clearTimeout(menu.hideTimer);
+                        fireEvent(chart, "exportMenuHidden");
+                    };
+                    chart.exportEvents.push(addEvent(menu, "mouseleave", function () {
+                        menu.hideTimer = win.setTimeout(menu.hideMenu, 500);
+                    }), addEvent(menu, "mouseenter", function () {
+                        H.clearTimeout(menu.hideTimer);
+                    }), addEvent(doc, "mouseup", function (e) {
+                        if (!chart.pointer.inClass(e.target, className)) {
+                            menu.hideMenu();
+                        }
+                    }), addEvent(menu, "click", function () {
+                        if (chart.openMenu) {
+                            menu.hideMenu();
+                        }
+                    }));
+                    options.forEach(function (item) {
+                        if ("string" === typeof item) {
+                            item = chart.options.exporting.menuItemDefinitions[item];
+                        }
+                        if (display(item, true)) {
+                            if (item.separator) {
+                                var node = createElement("hr", null, null, elem);
+                            } else {
+                                node = createElement("li", {
+                                    className: "highcharts-menu-item",
+                                    onclick: function (event) {
+                                        if (event) {
+                                            event.stopPropagation();
+                                        }
+                                        menu.hideMenu();
+                                        if (item.onclick) {
+                                            item.onclick.apply(chart, arguments);
+                                        }
+                                    },
+                                    innerHTML: item.text || chart.options.lang[item.textKey]
+                                }, null, elem);
+                                if (!chart.styledMode) {
+                                    /**
+                                     * @return {undefined}
+                                     */
+                                    node.onmouseover = function () {
+                                        css(this, navOptions.menuItemHoverStyle);
+                                    };
+                                    /**
+                                     * @return {undefined}
+                                     */
+                                    node.onmouseout = function () {
+                                        css(this, navOptions.menuItemStyle);
+                                    };
+                                    css(node, extend({
+                                        cursor: "pointer"
+                                    }, navOptions.menuItemStyle));
+                                }
+                            }
+                            chart.exportDivElements.push(node);
+                        }
+                    });
+                    chart.exportDivElements.push(elem, menu);
+                    chart.exportMenuWidth = menu.offsetWidth;
+                    chart.exportMenuHeight = menu.offsetHeight;
+                }
+                options = {
+                    display: "block"
+                };
+                if (x + chart.exportMenuWidth > chartWidth) {
+                    /** @type {string} */
+                    options.right = chartWidth - x - width - menuPadding + "px";
+                } else {
+                    /** @type {string} */
+                    options.left = x - menuPadding + "px";
+                }
+                if (y + height + chart.exportMenuHeight > chartHeight && "top" !== button.alignOptions.verticalAlign) {
+                    /** @type {string} */
+                    options.bottom = chartHeight - y - menuPadding + "px";
+                } else {
+                    /** @type {string} */
+                    options.top = y + height - menuPadding + "px";
+                }
+                css(menu, options);
+                css(chart.renderTo, {
+                    overflow: ""
+                });
+                /** @type {boolean} */
+                chart.openMenu = true;
+                fireEvent(chart, "exportMenuShown");
+            },
+            addButton: function (options) {
+                var chart = this;
+                var renderer = chart.renderer;
+                var btnOptions = merge(chart.options.navigation.buttonOptions, options);
+                var onclick = btnOptions.onclick;
+                var menuItems = btnOptions.menuItems;
+                var symbolSize = btnOptions.symbolSize || 12;
+                if (!chart.btnCount) {
+                    /** @type {number} */
+                    chart.btnCount = 0;
+                }
+                if (!chart.exportDivElements) {
+                    /** @type {!Array} */
+                    chart.exportDivElements = [];
+                    /** @type {!Array} */
+                    chart.exportSVGElements = [];
+                }
+                if (false !== btnOptions.enabled) {
+                    var attr = btnOptions.theme;
+                    var states = attr.states;
+                    var hover = states && states.hover;
+                    states = states && states.select;
+                    var callback;
+                    if (!chart.styledMode) {
+                        attr.fill = pick(attr.fill, "#ffffff");
+                        attr.stroke = pick(attr.stroke, "none");
+                    }
+                    delete attr.states;
+                    if (onclick) {
+                        /**
+                         * @param {!Event} e
+                         * @return {undefined}
+                         */
+                        callback = function (e) {
+                            if (e) {
+                                e.stopPropagation();
+                            }
+                            onclick.call(chart, e);
+                        };
+                    } else {
+                        if (menuItems) {
+                            /**
+                             * @param {!Event} event
+                             * @return {undefined}
+                             */
+                            callback = function (event) {
+                                if (event) {
+                                    event.stopPropagation();
+                                }
+                                chart.contextMenu(button.menuClassName, menuItems, button.translateX, button.translateY, button.width, button.height, button);
+                                button.setState(2);
+                            };
+                        }
+                    }
+                    if (btnOptions.text && btnOptions.symbol) {
+                        attr.paddingLeft = pick(attr.paddingLeft, 25);
+                    } else {
+                        if (!btnOptions.text) {
+                            extend(attr, {
+                                width: btnOptions.width,
+                                height: btnOptions.height,
+                                padding: 0
+                            });
+                        }
+                    }
+                    if (!chart.styledMode) {
+                        /** @type {string} */
+                        attr["stroke-linecap"] = "round";
+                        attr.fill = pick(attr.fill, "#ffffff");
+                        attr.stroke = pick(attr.stroke, "none");
+                    }
+                    var button = renderer.button(btnOptions.text, 0, 0, callback, attr, hover, states).addClass(options.className).attr({
+                        title: pick(chart.options.lang[btnOptions._titleKey || btnOptions.titleKey], "")
+                    });
+                    button.menuClassName = options.menuClassName || "highcharts-menu-" + chart.btnCount++;
+                    if (btnOptions.symbol) {
+                        var symbol = renderer.symbol(btnOptions.symbol, btnOptions.symbolX - symbolSize / 2, btnOptions.symbolY - symbolSize / 2, symbolSize, symbolSize, {
+                            width: symbolSize,
+                            height: symbolSize
+                        }).addClass("highcharts-button-symbol").attr({
+                            zIndex: 1
+                        }).add(button);
+                        if (!chart.styledMode) {
+                            symbol.attr({
+                                stroke: btnOptions.symbolStroke,
+                                fill: btnOptions.symbolFill,
+                                "stroke-width": btnOptions.symbolStrokeWidth || 1
+                            });
+                        }
+                    }
+                    button.add(chart.exportingGroup).align(extend(btnOptions, {
+                        width: button.width,
+                        x: pick(btnOptions.x, chart.buttonOffset)
+                    }), true, "spacingBox");
+                    chart.buttonOffset += (button.width + btnOptions.buttonSpacing) * ("right" === btnOptions.align ? -1 : 1);
+                    chart.exportSVGElements.push(button, symbol);
+                }
+            },
+            destroyExport: function (e) {
+                var chart = e ? e.target : this;
+                e = chart.exportSVGElements;
+                var exportDivElements = chart.exportDivElements;
+                var panes = chart.exportEvents;
+                var cacheName;
+                if (e) {
+                    e.forEach(function (elem, i) {
+                        if (elem) {
+                            /** @type {null} */
+                            elem.onclick = elem.ontouchstart = null;
+                            /** @type {string} */
+                            cacheName = "cache-" + elem.menuClassName;
+                            if (chart[cacheName]) {
+                                delete chart[cacheName];
+                            }
+                            chart.exportSVGElements[i] = elem.destroy();
+                        }
+                    });
+                    /** @type {number} */
+                    e.length = 0;
+                }
+                if (chart.exportingGroup) {
+                    chart.exportingGroup.destroy();
+                    delete chart.exportingGroup;
+                }
+                if (exportDivElements) {
+                    exportDivElements.forEach(function (elem, i) {
+                        H.clearTimeout(elem.hideTimer);
+                        removeEvent(elem, "mouseleave");
+                        /** @type {null} */
+                        chart.exportDivElements[i] = elem.onmouseout = elem.onmouseover = elem.ontouchstart = elem.onclick = null;
+                        discardElement(elem);
+                    });
+                    /** @type {number} */
+                    exportDivElements.length = 0;
+                }
+                if (panes) {
+                    panes.forEach(function (unbind) {
+                        unbind();
+                    });
+                    /** @type {number} */
+                    panes.length = 0;
+                }
+            }
+        });
+        /** @type {!Array<string>} */
+        SVGRenderer.prototype.inlineToAttributes = "fill stroke strokeLinecap strokeLinejoin strokeWidth textAnchor x y".split(" ");
+        /** @type {!Array} */
+        SVGRenderer.prototype.inlineBlacklist = [/-/, /^(clipPath|cssText|d|height|width)$/, /^font$/, /[lL]ogical(Width|Height)$/, /perspective/, /TapHighlightColor/, /^transition/, /^length$/];
+        /** @type {!Array} */
+        SVGRenderer.prototype.unstyledElements = ["clipPath", "defs", "desc"];
+        /**
+         * @return {undefined}
+         */
+        Chart.prototype.inlineStyles = function () {
+            /**
+             * @param {string} b
+             * @return {?}
+             */
+            function hyphenate(b) {
+                return b.replace(/([A-Z])/g, function (a, p_Interval) {
+                    return "-" + p_Interval.toLowerCase();
+                });
+            }
+            /**
+             * @param {!Node} node
+             * @return {undefined}
+             */
+            function recurse(node) {
+                /**
+                 * @param {string} value
+                 * @param {string} prop
+                 * @return {undefined}
+                 */
+                function filterStyles(value, prop) {
+                    /** @type {boolean} */
+                    blacklisted = whitelisted = false;
+                    if (whitelist) {
+                        i = whitelist.length;
+                        for (; i-- && !whitelisted;) {
+                            whitelisted = whitelist[i].test(prop);
+                        }
+                        /** @type {boolean} */
+                        blacklisted = !whitelisted;
+                    }
+                    if ("transform" === prop && "none" === value) {
+                        /** @type {boolean} */
+                        blacklisted = true;
+                    }
+                    i = blacklist.length;
+                    for (; i-- && !blacklisted;) {
+                        blacklisted = blacklist[i].test(prop) || "function" === typeof value;
+                    }
+                    if (!(blacklisted || objects[prop] === value && "svg" !== node.nodeName || ret[node.nodeName][prop] === value)) {
+                        if (-1 !== inlineToAttributes.indexOf(prop)) {
+                            node.setAttribute(hyphenate(prop), value);
+                        } else {
+                            suffix = suffix + (hyphenate(prop) + ":" + value + ";");
+                        }
+                    }
+                }
+                /** @type {string} */
+                var suffix = "";
+                var blacklisted;
+                var whitelisted;
+                var i;
+                if (1 === node.nodeType && -1 === unstyledElements.indexOf(node.nodeName)) {
+                    var data = win.getComputedStyle(node, null);
+                    var objects = "svg" === node.nodeName ? {} : win.getComputedStyle(node.parentNode, null);
+                    if (!ret[node.nodeName]) {
+                        pre = document.getElementsByTagName("svg")[0];
+                        var dummy = document.createElementNS(node.namespaceURI, node.nodeName);
+                        pre.appendChild(dummy);
+                        ret[node.nodeName] = merge(win.getComputedStyle(dummy, null));
+                        if ("text" === node.nodeName) {
+                            delete ret.text.fill;
+                        }
+                        pre.removeChild(dummy);
+                    }
+                    if (isAOS || isDangkr) {
+                        var p;
+                        for (p in data) {
+                            filterStyles(data[p], p);
+                        }
+                    } else {
+                        objectEach(data, filterStyles);
+                    }
+                    if (suffix) {
+                        data = node.getAttribute("style");
+                        node.setAttribute("style", (data ? data + ";" : "") + suffix);
+                    }
+                    if ("svg" === node.nodeName) {
+                        node.setAttribute("stroke-width", "1px");
+                    }
+                    if ("text" !== node.nodeName) {
+                        [].forEach.call(node.children || node.childNodes, recurse);
+                    }
+                }
+            }
+            var renderer = this.renderer;
+            var inlineToAttributes = renderer.inlineToAttributes;
+            var blacklist = renderer.inlineBlacklist;
+            var whitelist = renderer.inlineWhitelist;
+            var unstyledElements = renderer.unstyledElements;
+            var ret = {};
+            var pre;
+            renderer = doc.createElement("iframe");
+            css(renderer, {
+                width: "1px",
+                height: "1px",
+                visibility: "hidden"
+            });
+            doc.body.appendChild(renderer);
+            var document = renderer.contentWindow.document;
+            document.open();
+            document.write('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+            document.close();
+            recurse(this.container.querySelector("svg"));
+            pre.parentNode.removeChild(pre);
+        };
+        /**
+         * @param {(Object|number)} event
+         * @param {number} name
+         * @param {!Object} callback
+         * @param {number} index
+         * @return {?}
+         */
+        symbols.menu = function (event, name, callback, index) {
+            return ["M", event, name + 2.5, "L", event + callback, name + 2.5, "M", event, name + index / 2 + .5, "L", event + callback, name + index / 2 + .5, "M", event, name + index - 1.5, "L", event + callback, name + index - 1.5];
+        };
+        /**
+         * @param {!Array} obj
+         * @param {number} options
+         * @param {string} index
+         * @param {number} color
+         * @return {?}
+         */
+        symbols.menuball = function (obj, options, index, color) {
+            /** @type {!Array} */
+            obj = [];
+            /** @type {number} */
+            color = color / 3 - 2;
+            return obj = obj.concat(this.circle(index - color, options, color, color), this.circle(index - color, options + color + 4, color, color), this.circle(index - color, options + 2 * (color + 4), color, color));
+        };
+        /**
+         * @return {undefined}
+         */
+        Chart.prototype.renderExporting = function () {
+            var chart = this;
+            var exportingOptions = chart.options.exporting;
+            var buttons = exportingOptions.buttons;
+            var d = chart.isDirtyExporting || !chart.exportSVGElements;
+            /** @type {number} */
+            chart.buttonOffset = 0;
+            if (chart.isDirtyExporting) {
+                chart.destroyExport();
+            }
+            if (d && false !== exportingOptions.enabled) {
+                /** @type {!Array} */
+                chart.exportEvents = [];
+                chart.exportingGroup = chart.exportingGroup || chart.renderer.g("exporting-group").attr({
+                    zIndex: 3
+                }).add();
+                objectEach(buttons, function (value) {
+                    chart.addButton(value);
+                });
+                /** @type {boolean} */
+                chart.isDirtyExporting = false;
+            }
+            addEvent(chart, "destroy", chart.destroyExport);
+        };
+        addEvent(Chart, "init", function () {
+            var chart = this;
+            chart.exporting = {
+                update: function (val, data) {
+                    /** @type {boolean} */
+                    chart.isDirtyExporting = true;
+                    merge(true, chart.options.exporting, val);
+                    if (pick(data, true)) {
+                        chart.redraw();
+                    }
+                }
+            };
+            self.addUpdate(function (revLimit, context) {
+                /** @type {boolean} */
+                chart.isDirtyExporting = true;
+                merge(true, chart.options.navigation, revLimit);
+                if (pick(context, true)) {
+                    chart.redraw();
+                }
+            }, chart);
+        });
+        Chart.prototype.callbacks.push(function (chart) {
+            chart.renderExporting();
+            addEvent(chart, "redraw", chart.renderExporting);
+        });
+    });
+    k(t, "masters/modules/exporting.src.js", [], function () {
+    });
+});
