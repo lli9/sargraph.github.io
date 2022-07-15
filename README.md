@@ -1,5 +1,5 @@
 ## SARchart / SARgraph (System Activity Report chart/graph) 
-![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Fgithub.com%2Fsargraph%2Fsargraph.github.io%2Fhit-counter) [![Build Status](https://travis-ci.com/sargraph/sargraph.github.io.svg?branch=master)](https://travis-ci.com/sargraph/sargraph.github.io)
+![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsargraph%2Fsargraph.github.io&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Hits&edge_flat=false) [![Build Status](https://travis-ci.com/sargraph/sargraph.github.io.svg?branch=master)](https://travis-ci.com/sargraph/sargraph.github.io)
 
 An Online/Offline Tool to view the server's SAR data as charts.
 
@@ -42,7 +42,7 @@ The steps involved in generating the SAR Graph are as follows:
 
 1. Create a SAR output as a text file from the Unix server.
   + Login as root or with sudo access run the following commands to fetch the sar output for a specific date. Example:
-  ```shell
+  ```bash
   #LINUX
   # Generate file for single day:
   sar -A -f /var/log/sa/sa19 > /tmp/sa19_$(hostname).txt
@@ -88,4 +88,4 @@ The steps involved in generating the SAR Graph are as follows:
 
 ## Author
 [Suresh Raju](https://dotsuresh.com)<br>
-copyright 2016 - 2020
+copyright 2016 - 2022
